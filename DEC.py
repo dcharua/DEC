@@ -46,14 +46,14 @@ def tsne(x, y, y_pred):
     labels = np.arange(num_classes)
 
     # restrict to a sample because slow
-    mask = np.arange(5000)
+    mask = np.arange(35000)
     X_sample = x[mask].squeeze()
     y_sample = y[mask]
-    y_pred = y_pred[mask]
+    y_sample_pred = y_pred[mask]
     if 1==1:
         print("X_sample: {}".format(X_sample.shape))
         print("y_sample: {}".format(y_sample.shape))
-
+        print("y_pred: {}".format(y_sample_pred.shape))
         # flatten images to (N, D) for feeding to t-SNE
         X_sample_flat = np.reshape(X_sample, [X_sample.shape[0], -1])
 
@@ -90,14 +90,22 @@ def tsne(x, y, y_pred):
         plt.savefig('ytsne', format='pdf', dpi=600)
         plt.show()
         
-        for i in range(num_classes):
-            ax.scatter(xx[y_sample==i], yy[y_pred==i], color=colors[i], label=labels[i], s=10)
+        fig2 = plt.figure()
+        ax2 = fig2.add_subplot(111)
+        colors = cm.Spectral(np.linspace(0, 1, num_classes))
 
-        ax.xaxis.set_major_formatter(NullFormatter())
-        ax.yaxis.set_major_formatter(NullFormatter())
+
+        xx = embeddings[:, 0]
+        yy = embeddings[:, 1]
+
+        for i in range(num_classes):
+            ax2.scatter(xx[y_sample_pred==i], yy[y_sample_pred==i], color=colors[i], label=labels[i], s=10)
+
+        ax2.xaxis.set_major_formatter(NullFormatter())
+        ax2.yaxis.set_major_formatter(NullFormatter())
         plt.axis('tight')
         plt.legend(loc='best', scatterpoints=1, fontsize=5)
-        plt.savefig('y_pred/tsne', format='pdf', dpi=600)
+        plt.savefig('y_pred_tsne', format='pdf', dpi=600)
         plt.show()
 
 
@@ -142,7 +150,7 @@ class ClusteringLayer(Layer):
 
     # Example
     ```
-        model.add(ClusteringLayer(n_clusters=10))
+        model.add(ClusteringLayer(n_clusters=21))
     ```
     # Arguments
         n_clusters: number of clusters.
@@ -199,7 +207,7 @@ class ClusteringLayer(Layer):
 class DEC(object):
     def __init__(self,
                  dims,
-                 n_clusters=10,
+                 n_clusters=21,
                  alpha=1.0,
                  init='glorot_uniform'):
 
@@ -400,7 +408,7 @@ if __name__ == "__main__":
         pretrain_epochs = args.pretrain_epochs
 
     # prepare the DEC model
-    dec = DEC(dims=[x.shape[-1], 500, 500, 2000, 10], n_clusters=n_clusters, init=init)
+    dec = DEC(dims=[x.shape[-1], 500, 500, 2000, 21], n_clusters=n_clusters, init=init)
 
     if args.ae_weights is None:
         dec.pretrain(x=x, y=y, optimizer=pretrain_optimizer,

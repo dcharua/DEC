@@ -377,8 +377,8 @@ def load_egofull(data_path='./data/egofull'):
         y = hf['labels'][:]
 
     # if features are ready, return them
-    if os.path.exists(data_path + '/stl_features.npy'):
-        return np.load(data_path + '/stl_features.npy'), y
+    #if os.path.exists(data_path + '/stl_features.npy'):
+        #return np.load(data_path + '/stl_features.npy'), y
 
     with h5py.File('data/egofull/data4torch.h5', 'r') as hf:
         x = hf['data'][:]
@@ -390,17 +390,17 @@ def load_egofull(data_path='./data/egofull'):
 
     print(x.shape)
     # extract features
-    features = extract_myvgg16_features(x)
+    #features = extract_myvgg16_features(x)
 
     # scale to [0,1]
     from sklearn.preprocessing import MinMaxScaler
-    features = MinMaxScaler().fit_transform(features)
+    #features = MinMaxScaler().fit_transform(features)
 
     # save features
-    np.save(data_path + '/stl_features.npy', features)
-    print('features saved to ' + data_path + '/stl_features.npy')
-    return features, y
-
+    #np.save(data_path + '/stl_features.npy', features)
+    #print('features saved to ' + data_path + '/stl_features.npy')
+    #return features, y
+    return x, y
 
 def load_data(dataset_name):
     if dataset_name == 'mnist':
@@ -422,3 +422,4 @@ def load_data(dataset_name):
     else:
         print('Not defined for loading', dataset_name)
         exit(0)
+
