@@ -32,10 +32,19 @@ from matplotlib.ticker import NullFormatter
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
+if 'tensorflow' == K.backend():
+   import tensorflow as tf
+   from keras.backend.tensorflow_backend import set_session
+
+   config = tf.ConfigProto()#log_device_placement=True)
+   config.gpu_options.per_process_gpu_memory_fraction = 0.3
+   config.gpu_options.visible_device_list = '0'
+   # Runs the op.
+   set_session(tf.Session(config=config))
 
 
 def tsne(x, y, y_pred):
-    X_train = np.asarray(x).astype('float64')    
+    X_train = np.asarray(x).astype('float64')
     # shuffle dataset
     if 1==3:
         p = np.random.permutation(len(X_train))
@@ -89,7 +98,7 @@ def tsne(x, y, y_pred):
         plt.legend(loc='best', scatterpoints=1, fontsize=5)
         plt.savefig('ytsne', format='pdf', dpi=600)
         plt.show()
-        
+
         fig2 = plt.figure()
         ax2 = fig2.add_subplot(111)
         colors = cm.Spectral(np.linspace(0, 1, num_classes))
