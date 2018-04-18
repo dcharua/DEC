@@ -46,7 +46,7 @@ def tsne(x, y, y_pred):
     labels = np.arange(num_classes)
 
     # restrict to a sample because slow
-    mask = np.arange(35000)
+    mask = np.arange(5000)
     X_sample = x[mask].squeeze()
     y_sample = y[mask]
     y_sample_pred = y_pred[mask]
@@ -279,7 +279,7 @@ class DEC(object):
     def compile(self, optimizer='sgd', loss='kld'):
         self.model.compile(optimizer=optimizer, loss=loss)
 
-    def fit(self, x, y=None, maxiter=2e4, batch_size=256, tol=1e-3,
+    def fit(self, x, y=None, maxiter=5000, batch_size=256, tol=1e-3,
             update_interval=140, save_dir='./results/temp'):
 
         print('Update interval', update_interval)
